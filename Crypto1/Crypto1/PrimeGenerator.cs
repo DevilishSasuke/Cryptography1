@@ -24,7 +24,7 @@ namespace Cryptography
 
         public BigInteger randNum(int len = 0)
         {
-            len = len > 0 ? len / 8 : random.Next(100, 130) / 8;
+            len = len > 0 ? len / 8 : random.Next(40, 60) / 8;
             var bytes = new byte[len];
 
             random.NextBytes(bytes);
@@ -64,7 +64,7 @@ namespace Cryptography
             for (int j = 0; j < steps; j++)
             {
                 var a = randNum();
-                if (CryptoRSA.EuclidExtended(a, number) > 1)
+                if (CryptoRSA.Euclid(a, number) > 1)
                     return false;
                 d = 1;
                 for (int i = k; i >= 0; i--)

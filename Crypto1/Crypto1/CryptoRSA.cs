@@ -10,6 +10,7 @@ namespace Cryptography
         public BigInteger N { get; private set; } = BigInteger.Zero;
         public BigInteger e { get; private set; } = BigInteger.Zero;
         public BigInteger d { get; private set; } = BigInteger.Zero;
+        public BigInteger phi { get; private set; } = BigInteger.Zero;
         private readonly PrimeGenerator rand = new PrimeGenerator();
 
         public void GenerateNewKeys()
@@ -19,12 +20,25 @@ namespace Cryptography
 
             N = p * q;
 
-            BigInteger phi = EulerFunc(p, q);
-            e = GetE(phi);
-            d = phi - BigInteger.Abs(EuclidExtended(phi, e));
-            Console.WriteLine(d);
+            phi = EulerFunc(p, q);
+            e = GetE();
+            var (x, y, z) = EuclidExtended(e, phi);
+            Console.WriteLine(x + " " + y + " " + z);
+            Console.WriteLine(GCD(e, phi));
+            d = (y + phi) % phi;
+
+            /*d = phi - BigInteger.Abs(Euclid(phi, e));
+            //Console.WriteLine(d);
             d = (1 / e) % phi;
-            Console.WriteLine(d);
+            //Console.WriteLine(d);
+
+            Console.WriteLine(Euclid(p, q));
+            Console.WriteLine(Euclid(p, e));
+            Console.WriteLine(Euclid(p, d));
+            (x, y, z) = EuclidExtended(p, e);
+            Console.WriteLine(x + " " + y + " " + z);
+            (x, y, z) = EuclidExtended(p, d);
+            Console.WriteLine(x + " " + y + " " + z);*/
         }
 
         public BigInteger EncryptText(BigInteger text) => N > 0 ? 
@@ -59,25 +73,28 @@ namespace Cryptography
             return (p - 1) * (q - 1);
         }
 
-        public static BigInteger EuclidExtended(BigInteger a, BigInteger b)
+        public static (BigInteger, BigInteger, BigInteger) EuclidExtended(BigInteger a, BigInteger b)
         {
-            BigInteger q, r, x, y, x1 = 0, y2 = 0, x2 = 1, y1 = 1;
+            if (b == 0)
+                return (a, 1, 0);
+            BigInteger d, x, y, x1, y1;
+            (d, x1, y1) = EuclidExtended(b, a % b);
+            x = y1;
+            y = x1 - a / b * y1;
+            return (d, x, y);
+        }
+        
+        public static BigInteger Euclid(BigInteger a, BigInteger b)
+        {
+            BigInteger t;
             while (b > 0)
             {
-                q = a / b;
-                r = a - q * b;
-                x = x2 - q * x1;
-                y = y2 - q * y1;
-                a = b;
-                b = r;
-                x2 = x1;
-                x1 = x;
-                y2 = y1;
-                y1 = y;
+                t = b;
+                b = a % b;
+                a = t;
             }
 
-            if (x2 < y2) return x2;
-            return y2;
+            return a;
         }
 
         public BigInteger GetRelativelyPrime(BigInteger a)
@@ -87,6 +104,8 @@ namespace Cryptography
             while (true)
             {
                 b = rand.GeneratePrime();
+                if (b >= a && b <= 2) continue;
+
                 for (b = b % a; b < a; ++b)
                 {
                     if (GCD(a, b) == 1)
@@ -109,19 +128,28 @@ namespace Cryptography
             return num1;
         }
 
-        public BigInteger GetE(BigInteger phi)
+        public BigInteger GetE()
         {
+            BigInteger t = 0, x = 0, y, candidate;
             var answer = Program.ChooseE();
             if (answer == "1")
-                return Program.GetNumberFromConsole();
-            while (true) 
             {
-                var candidate = rand.randNum(24);
+                return Program.GetNumberFromConsole();
+                (t, x, y) = EuclidExtended(candidate, phi);
+                d = x % phi;
+                return candidate;
+            }
+            return GetRelativelyPrime(phi);
+            do
+            {
+                candidate = rand.randNum();
+                if (candidate >= phi) continue;
                 if (candidate % 2 == 0) continue;
 
-                if (GCD(candidate, phi) == 1)
-                    return candidate;
-            }
+                (t, x, y) = EuclidExtended(candidate, phi);
+            } while (t > 1);
+            d = x % phi;
+            return candidate;
         }
     }
 }

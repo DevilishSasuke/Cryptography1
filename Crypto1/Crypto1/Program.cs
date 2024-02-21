@@ -27,8 +27,8 @@ namespace Cryptography
                 {
                     case "1":
                         unit.GenerateNewKeys();
-                        Console.WriteLine(String.Format("\np: {0}; \nq: {1}; \ne: {2}; \nd: {3};",
-                            unit.p, unit.q, unit.e, unit.d));
+                        Console.WriteLine(String.Format("\np: {0}; \nq: {1}; \ne: {2}; \nd: {3}; \nphi: {4}",
+                            unit.p, unit.q, unit.e, unit.d, unit.phi));
                         break;
                     case "2":
                         Console.WriteLine("\nВведите текст для шифрования: ");
