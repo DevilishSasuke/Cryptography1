@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\DevilishSasuke\\source\\repos\\Crypto1\\Crypto1\\Crypto1.csproj": {}
+    "C:\\Users\\DevilishSasuke\\source\\git\\Cryptography1\\Crypto1\\Crypto1\\Crypto1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\DevilishSasuke\\source\\repos\\Crypto1\\Crypto1\\Crypto1.csproj": {
+    "C:\\Users\\DevilishSasuke\\source\\git\\Cryptography1\\Crypto1\\Crypto1\\Crypto1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\DevilishSasuke\\source\\repos\\Crypto1\\Crypto1\\Crypto1.csproj",
+        "projectUniqueName": "C:\\Users\\DevilishSasuke\\source\\git\\Cryptography1\\Crypto1\\Crypto1\\Crypto1.csproj",
         "projectName": "Crypto1",
-        "projectPath": "C:\\Users\\DevilishSasuke\\source\\repos\\Crypto1\\Crypto1\\Crypto1.csproj",
+        "projectPath": "C:\\Users\\DevilishSasuke\\source\\git\\Cryptography1\\Crypto1\\Crypto1\\Crypto1.csproj",
         "packagesPath": "C:\\Users\\DevilishSasuke\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\DevilishSasuke\\source\\repos\\Crypto1\\Crypto1\\obj\\",
+        "outputPath": "C:\\Users\\DevilishSasuke\\source\\git\\Cryptography1\\Crypto1\\Crypto1\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\DevilishSasuke\\AppData\\Roaming\\NuGet\\NuGet.Config",

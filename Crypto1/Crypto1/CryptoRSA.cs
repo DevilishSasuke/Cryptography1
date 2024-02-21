@@ -25,7 +25,6 @@ namespace Cryptography
             Console.WriteLine(d);
             d = (1 / e) % phi;
             Console.WriteLine(d);
-            Console.WriteLine(EuclidExtended(336, 90));
         }
 
         public BigInteger EncryptText(BigInteger text) => N > 0 ? 
