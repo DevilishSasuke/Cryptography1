@@ -15,20 +15,19 @@ namespace Cryptography
                 candidate = randNum();
                 if (candidate == 0) continue;
 
-                if (IsLikelyPrime(candidate))
-                    if (RabinMiller(candidate, k))
-                        return candidate;
+                if (IsLikelyPrime(candidate) && RabinMiller(candidate, k))
+                    return candidate;
             }
 
         }
 
         public BigInteger randNum(int len = 0)
         {
-            len = len > 0 ? len / 8 : random.Next(40, 60) / 8;
+            len = len > 7 ? len / 8 : random.Next(100, 130) / 8;
             var bytes = new byte[len];
 
             random.NextBytes(bytes);
-            bytes[bytes.Length - 1] &= (byte)0x7F;
+            bytes[bytes.Length - 1] &= (byte)0x7F; // Смена знака на положительный
 
             return new BigInteger(bytes);
         }
@@ -37,6 +36,7 @@ namespace Cryptography
         {
             var sieve = EratosthenesSieve.GetSieve();
 
+            // Проходим по решету простых чисел
             foreach (var prime in sieve)
             {
                 if (prime >= number)
@@ -61,6 +61,7 @@ namespace Cryptography
                 b = b / 2;
             } while (b > 0);
 
+            // Делаем steps попыток обнаружить делители
             for (int j = 0; j < steps; j++)
             {
                 var a = randNum();

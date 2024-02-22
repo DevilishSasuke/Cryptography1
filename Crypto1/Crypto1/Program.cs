@@ -9,6 +9,7 @@ namespace Cryptography
         {
             CryptoRSA unit = new CryptoRSA();
             string answer = "";
+            bool isGenerated = false;
 
             while (true)
             {
@@ -26,16 +27,29 @@ namespace Cryptography
                 switch (answer)
                 {
                     case "1":
+                        isGenerated = true;
                         unit.GenerateNewKeys();
-                        Console.WriteLine(String.Format("\np: {0}; \nq: {1}; \ne: {2}; \nd: {3}; \nphi: {4}",
-                            unit.p, unit.q, unit.e, unit.d, unit.phi));
+                        Console.WriteLine(String.Format("\np: {0}; \nq: {1}; " +
+                            "\ne: {2}; \nd: {3}; \nphi: {4}",
+                            unit.p, unit.q, 
+                            unit.e, unit.d, unit.phi));
                         break;
                     case "2":
+                        if (!isGenerated)
+                        {
+                            Console.WriteLine("\nСначала сгенерируйте ключи.");
+                            continue;
+                        }
                         Console.WriteLine("\nВведите текст для шифрования: ");
                         var encrypted = unit.EncryptText(GetNumberFromConsole());
                         Console.WriteLine("Encrypted text:\n" + encrypted);
                         break;
                     case "3":
+                        if (!isGenerated)
+                        {
+                            Console.WriteLine("\nСначала сгенерируйте ключи.");
+                            continue;
+                        }
                         Console.WriteLine("\nВведите текст для расшифровки: ");
                         var decrypted = unit.DecryptText(GetNumberFromConsole());
                         Console.WriteLine("Decrypted text:\n" + decrypted);
