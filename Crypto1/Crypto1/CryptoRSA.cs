@@ -1,8 +1,10 @@
 ﻿using System.Numerics;
 using System.Security.AccessControl;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Cryptography
 {
+    // Шифрование алгоритмом RSA
     public class CryptoRSA
     {
         public BigInteger p { get; private set; } = BigInteger.Zero;
@@ -13,29 +15,31 @@ namespace Cryptography
         public BigInteger phi { get; private set; } = BigInteger.Zero;
         private readonly PrimeGenerator rand = new PrimeGenerator();
 
+        // Генерация полностью новых ключей
         public void GenerateNewKeys()
         {
+            // p и q - взаимно простые, простые случайно сгенерированные числа
             p = rand.GeneratePrime();
             q = rand.GeneratePrime();
 
             N = p * q;
 
             phi = EulerFunc(p, q);
-            e = GetE();
+            e = GetE(); // Получаем E на выбор
             d = (EuclidExtended(e, phi).Item2 + phi) % phi;
         }
 
-        public BigInteger EncryptText(BigInteger text) => N > 0 ? 
-            ModExp(text, e, N): 
-            throw new Exception("Keys must be generated");
+        // Зашифровка текста
+        public BigInteger EncryptText(BigInteger text) => ChineseTheoreme(text, e);
 
-        public BigInteger DecryptText(BigInteger text) => N > 0 ? 
-            ModExp(text, d, N): 
-            throw new Exception("Keys must be generated");
+        // Расшифровка текста
+        // С китайской теоремой об остатках
+        public BigInteger DecryptText(BigInteger text) => ChineseTheoreme(text, d);
 
         public (BigInteger, BigInteger) GetPublicKey() => (e, N);
         public (BigInteger, BigInteger) GetPrivateKey() => (d, N);
 
+        // Возведение в степень по модулю
         public static BigInteger ModExp(BigInteger a, BigInteger b, BigInteger n)
         {
             var c = a;
@@ -51,21 +55,26 @@ namespace Cryptography
             return d;
         }
 
+        // Китайская теорема об остатках для RSA
+        private BigInteger ChineseTheoreme(BigInteger T, BigInteger atr)
+        {
+            BigInteger M, M1, M2, atr1, atr2;
+            atr1 = atr % (p - 1);
+            atr2 = atr % (q - 1);
+            M1 = ModExp(T, atr1, p);
+            M2 = ModExp(T, atr2, q);
+            var x = EuclidExtended(q, p).Item2;
+            var r = x % p;
+            M = (((M1 - M2) * r) % p) * q + M2;
+            return M;
+        }
+
+        // Функция Эйлера
+        // Количество меньших взаимно-простых чисел
         public BigInteger EulerFunc(BigInteger p, BigInteger q) => (p - 1) * (q - 1);
 
-        public static (BigInteger, BigInteger, BigInteger) EuclidExtended(BigInteger a, BigInteger b)
-        {
-            if (b == 0)
-                return (a, 1, 0);
-
-            BigInteger d, x, y, x1, y1;
-            (d, x1, y1) = EuclidExtended(b, a % b);
-            x = y1;
-            y = x1 - a / b * y1;
-
-            return (d, x, y);
-        }
-        
+        // Алгоритм Евклида
+        // Нахождение НОД
         public static BigInteger Euclid(BigInteger a, BigInteger b)
         {
             BigInteger t;
@@ -79,6 +88,22 @@ namespace Cryptography
             return a;
         }
 
+        // Расширенный алгоритм Евклида
+        // Нахождение НОД и линейной комбинации
+        public static (BigInteger, BigInteger, BigInteger) EuclidExtended(BigInteger a, BigInteger b)
+        {
+            if (b == 0)
+                return (a, 1, 0);
+
+            BigInteger d, x, y, x1, y1;
+            (d, x1, y1) = EuclidExtended(b, a % b);
+            x = y1;
+            y = x1 - a / b * y1;
+
+            return (d, x, y);
+        }
+        
+        // Получить взаимно простое число относительно a
         public BigInteger GetRelativelyPrime(BigInteger a)
         {
             BigInteger b;
@@ -90,26 +115,14 @@ namespace Cryptography
 
                 for (b = b % a; b < a; ++b)
                 {
-                    if (GCD(a, b) == 1)
+                    if (Euclid(a, b) == 1)
                         return b;
                 }
             }
         }
 
-        private static BigInteger GCD(BigInteger num1, BigInteger num2)
-        {
-            BigInteger remainder;
-
-            while (num2 != 0)
-            {
-                remainder = num1 % num2;
-                num1 = num2;
-                num2 = remainder;
-            }
-
-            return num1;
-        }
-
+        // Получение E на выбор
+        // Вводом или сгенерированная
         public BigInteger GetE() => Program.ChooseE() == "1" ?
             Program.GetNumberFromConsole() :
             GetRelativelyPrime(phi);

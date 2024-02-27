@@ -2,10 +2,13 @@
 
 namespace Cryptography
 {
+    // Генератор псевдопростых чисел
     public class PrimeGenerator
     {
         private readonly Random random = new Random();
         private BigInteger candidate { get; set; }
+
+        // Получить новое простое число
         public BigInteger GeneratePrime()
         {
             int k = 50;
@@ -21,6 +24,8 @@ namespace Cryptography
 
         }
 
+        // Генерация случайного числа
+        // len - длина битов в числе
         public BigInteger randNum(int len = 0)
         {
             len = len > 7 ? len / 8 : random.Next(100, 130) / 8;
@@ -32,6 +37,8 @@ namespace Cryptography
             return new BigInteger(bytes);
         }
 
+        // Проверка на простоту поиском чисел-делителей
+        // из решета эратосфена
         public static bool IsLikelyPrime(BigInteger number)
         {
             var sieve = EratosthenesSieve.GetSieve();
@@ -48,6 +55,7 @@ namespace Cryptography
             return true;
         }
 
+        // Проверка Рабина Миллера
         public bool RabinMiller(BigInteger number, int steps)
         {
             var b = number - 1;
@@ -65,6 +73,7 @@ namespace Cryptography
             for (int j = 0; j < steps; j++)
             {
                 var a = randNum();
+                // Взаимно простые?
                 if (CryptoRSA.Euclid(a, number) > 1)
                     return false;
                 d = 1;

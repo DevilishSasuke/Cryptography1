@@ -4,6 +4,7 @@
     {
         private static int previousN;
         private static int[] sieve;
+        // Генерация решета эратосфена из первых n чисел
         public static int[] GetSieve(int n = 5000)
         {
             if (n < 1)
