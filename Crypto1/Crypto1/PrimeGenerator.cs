@@ -38,7 +38,7 @@ namespace Cryptography
         }
 
         // Проверка на простоту поиском чисел-делителей
-        // из решета эратосфена
+        // из решета Эратосфена
         public static bool IsLikelyPrime(BigInteger number)
         {
             var sieve = EratosthenesSieve.GetSieve();

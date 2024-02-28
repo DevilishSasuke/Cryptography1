@@ -1,6 +1,4 @@
 ﻿using System.Numerics;
-using System.Security.AccessControl;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Cryptography
 {
@@ -70,7 +68,7 @@ namespace Cryptography
         }
 
         // Функция Эйлера
-        // Количество меньших взаимно-простых чисел
+        // Количество меньших взаимно простых чисел
         public BigInteger EulerFunc(BigInteger p, BigInteger q) => (p - 1) * (q - 1);
 
         // Алгоритм Евклида
